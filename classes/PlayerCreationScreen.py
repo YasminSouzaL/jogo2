@@ -33,16 +33,16 @@ class PlayerCreationScreen:
     def draw_title(self):
         title = stylo.TextTitle("Tela de Jogador", stylo.Fonts.TITLE_FONT, stylo.Colors.RED, self.width // 2, self.height // 6)
         title.draw(self.screen)
-    def draw_text(self):
-        text = stylo.TextTitle("Jogador:", stylo.Fonts.BUTTON_FONT, stylo.Colors.BLACK, self.width // 2, self.height // 3)
-        text.draw(self.screen)
 
     def draw_input(self):
+        title_text = stylo.Text("Digite um Jogador:", stylo.Fonts.MAIN_FONT, stylo.Colors.BLACK, self.width // 2, self.height // 3)
+        title_text.draw(self.screen)
         for box, color in zip(self.input_boxes, self.box_colors):
             pygame.draw.rect(self.screen, color, box)
         font = pygame.font.Font(None, 32)
-        text = font.render(self.input_name, True, stylo.Colors.BLACK)
-        self.screen.blit(text, (self.input_boxes[0].x + 5, self.input_boxes[0].y + 5))
+        text_surface = font.render(self.input_name, True, stylo.Colors.BLACK)
+        self.screen.blit(text_surface, (self.input_boxes[0].x + 5, self.input_boxes[0].y + 5))
+
 
     def draw_buttons(self):
         self.add_button.draw(self.screen)
@@ -52,7 +52,6 @@ class PlayerCreationScreen:
         self.screen.fill(stylo.Colors.WHITE)
         #self.draw_background()
         self.draw_title()
-        self.draw_text()
         self.draw_input()
         self.draw_buttons()
         pygame.display.flip()

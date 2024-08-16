@@ -93,8 +93,6 @@ class Text:
         text_surf = self.font.render(self.text, True, self.color)
         text_rect = text_surf.get_rect(center=(self.x, self.y))
         screen.blit(text_surf, text_rect)
-
-        
 class TextTitle:
     def __init__(self, text, font, color, x, y):
         self.text = text
@@ -127,11 +125,14 @@ class Input:
         self.font = font
         self.color = color
         self.text = ''
+
+    def draw_text(self, screen):
+        text_surf = self.font.render(self.text, True, Colors.BLACK)
+        screen.blit(text_surf, (self.rect.x + 5, self.rect.y + 5))
     
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, self.rect)
-        text_surf = self.font.render(self.text, True, Colors.BLACK)
-        screen.blit(text_surf)
+        self.draw_text(screen)
 
 class SquarePonts:
     def __init__(self, screen, x, y, width, height, color):

@@ -17,21 +17,13 @@ surface = pygame.display.set_mode((600, 400))
 
 # def set_difficulty(value, difficulty):
 
-# def start_the_game():
-#     player_creation_screen = PlayerCreationScreen(800, 600)  
-#     player_creation_screen.run()
-#     mao=ScreenCard() 
-#     rodadas = Rodadas(800,600,player_creation_screen.players,mao.load_card_images)
-#     rodadas.run()
-#     winner = Winner(rodadas.players)
-#     winner.run()
 
 def start_the_game():
     player_creation_screen = PlayerCreationScreen(800, 600)  
     player_creation_screen.run()
 
 def rules():
-    screen_rules = ScreenRules()
+    screen_rules = ScreenRules(800,600)
     screen_rules.run()
 
 menu = pygame_menu.Menu(
