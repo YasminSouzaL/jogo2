@@ -71,7 +71,7 @@ class ScreenCard:
             if self.check_player():
                 #receber cartas novas do metodo generate_player_cards
                 self.cardsnow =  self.generate_player_cards()
-                self.rounds = Rodadas(self.player_names, self.player_cards, self.card_images,self.cardsnow )
+                self.rounds = Rodadas(self.player_names, self.player_cards, self.card_images,self.cardsnow, 800,600)
                 self.rounds.run()
                 break
             else:
