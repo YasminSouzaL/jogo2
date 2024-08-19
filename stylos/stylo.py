@@ -74,7 +74,7 @@ class Button:
         text_surf = self.font.render(self.text, True, self.text_color)
         screen.blit(text_surf, (self.rect.x + self.rect.width / 2 - text_surf.get_width() / 2,
                                 self.rect.y + self.rect.height / 2 - text_surf.get_height() / 2))
-
+        
     def is_clicked(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
@@ -138,12 +138,18 @@ class SquarePonts:
     def __init__(self, screen, x, y, width, height, color):
         pygame.draw.rect(screen, color, (x - width // 3, y - height // 2, width, height))
 
-# class ButtonTruco:
-#     def __init__(self, x, y, width, height, font, color):
-#         self.rect = pygame.Rect(x, y, width, height)
-#         self.font = font
-#         self.color = color
-#         self.text = ''
 
-#     def draw(self, screen):
-#         pygame.draw.rect(screen, self.color, self.rect)
+class Cards:
+    def __init__(self, screen, x, y, width, height, card_image):
+        self.screen = screen
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.card_image = card_image
+        self.card_rect = self.card_image.get_rect(center=(self.x, self.y))
+        self.draw()
+
+    def draw(self):
+        self.screen.blit(self.card_image, self.card_rect)
+    

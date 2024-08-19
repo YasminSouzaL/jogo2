@@ -37,6 +37,9 @@ class Hand:
         deck = Deck.get_instance()
         self._cards = deck.deal(3)
 
+    #Definir a logica do truco mineiro
+    
+
     def winner(self):
         points = 0
         for card in self._cards:
