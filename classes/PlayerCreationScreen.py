@@ -10,13 +10,14 @@ class PlayerCreationState(Enum):
 
 
 class PlayerCreationScreen:
-    def __init__(self, screen, width, height):
+    def __init__(self, screen, width, height, difficulty):
         self.screen = screen
         self.width = width
         self.height = height
         self.font = stylo.Fonts()
         self.input_name = ""
         self.player_names = []
+        self.difficulty = difficulty
         # Buttons
         self.add_button = stylo.Button(self.width/6, 450, 200, 50, stylo.Colors.RED, "Adicionar", stylo.Colors.WHITE, stylo.Fonts.BUTTON_FONT)
         self.remove_button = stylo.Button(self.width/6 + 300, 450, 200, 50, stylo.Colors.GREEN, "Remover", stylo.Colors.WHITE, stylo.Fonts.BUTTON_FONT)
@@ -94,7 +95,7 @@ class PlayerCreationScreen:
                         self.add_player(self.input_name)
                         if len(self.player_names) >= 2:
                             #Ir para Gerador de cartas
-                            self.cards = ScreenCard(self.player_names, self.screen, self.state)
+                            self.cards = ScreenCard(self.player_names, self.screen, self.state, self.difficulty)
                             self.cards.run()
 
                     if self.remove_button.rect.collidepoint(event.pos):
@@ -105,7 +106,7 @@ class PlayerCreationScreen:
                         self.add_player(self.input_name)
                         if len(self.player_names) >= 2:
                             #Ir para Gerador de cartas
-                            self.cards = ScreenCard(self.player_names, self.screen, self.state)
+                            self.cards = ScreenCard(self.player_names, self.screen, self.state, self.difficulty)
                             self.cards.run()
                             #self.state = ""
 

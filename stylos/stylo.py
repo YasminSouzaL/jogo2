@@ -80,6 +80,9 @@ class Button:
             if self.rect.collidepoint(event.pos):
                 return True
         return False
+    
+    def is_over(self, pos):
+        return self.rect.collidepoint(pos)
 
 class Text:
     def __init__(self, text, font, color, x, y):

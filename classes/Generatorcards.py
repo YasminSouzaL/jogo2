@@ -4,6 +4,7 @@ import pygame
 from classes.Deck import Deck
 from classes.Card import Card
 from classes.Rodadas import Rodadas
+from classes.Rodada_pc import RodadasPC
 from stylos import stylo
 
 pygame.init()
@@ -23,7 +24,7 @@ class ScreenCard:
     - Gerar cartas para 1 jogador
     '''
 
-    def __init__(self, player_names, screen, state: GameState):
+    def __init__(self, player_names, screen, state: GameState , difficulty):
         self.screen = screen
         self.running = True
         self.deck = Deck()
@@ -35,6 +36,7 @@ class ScreenCard:
         self.player_names = player_names
         self.state = state
         self.cardnow = None
+        self.difficulty = difficulty
        
     def check_player(self):
         if self.state == 1:
@@ -92,14 +94,14 @@ class ScreenCard:
                 if self.check_player():
                     self.cardnow = self.generate_player_cards
                     self.state = GameState.RODADAS
-                    self.rounds = Rodadas(self.player_names, self.player_cards, self.card_images, self.cardnow, 800, 600)
+                    self.rounds = Rodadas(self.player_names, self.player_cards, self.card_images, self.cardnow,self.difficulty, 800, 600)
                     self.rounds.run()
                     break
                 
             elif self.state == 2:
                 if self.check_player():
                     self.state = GameState.RODADAS_PC
-                    self.round2 = Rodadas_pc(self.player_names, self.player_cards, self.card_images, 800, 600)
+                    self.round2 = RodadasPC(self.player_names, self.player_cards, self.card_images,self.cardnow,self.difficulty,800, 600)
                     self.round2.run()
                     break
             else:

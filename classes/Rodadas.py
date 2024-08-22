@@ -10,7 +10,7 @@ from stylos import stylo
 import pygame
 
 class Rodadas:
-    def __init__(self,player_names, player_cards, card_images, cards_now_call_back, width, height):
+    def __init__(self,player_names, player_cards, card_images, cards_now_call_back,difficulty, width, height):
         self.hand = Hand()
         self.running = True
         self.player_names = player_names
@@ -30,7 +30,11 @@ class Rodadas:
         self.width = width
         self.height = height
         self.screen = pygame.display.set_mode((self.width, self.height))
-    
+        self.difficulty = difficulty
+        
+    #Trata um erro se a dificuldade se difficulty não for igual a zero
+        if self.difficulty != 0:
+            raise ValueError("A dificuldade deve ser 0")
 
     #Botões
         self.buttonTruco = stylo.Button(self.width/6, 500, 200, 50, stylo.Colors.RED, "Truco", stylo.Colors.WHITE, stylo.Fonts.BUTTON_FONT)
@@ -44,7 +48,8 @@ class Rodadas:
             2º Professor não posso usar o metedo check_round_winner para verificar o ganhador da rodada do truco, pois o check_round_winner só verifica o ganhador da rodada
             3º tive que criar uma classe chamada Truco para verificar o ganhador do truco
             4º Professor estou criando um sistema de pessoa contra computador
-            5º temos um problema com o menu
+            5º temos um problema com o menu RESOVIDO
+            6º Vamos fazer um teste com alguem
     
     '''
 
@@ -59,7 +64,7 @@ class Rodadas:
         text.draw(self.screen)
         
     def draw_background(self):
-        background = pygame.image.load("data/imagem/background.png")
+        background = pygame.image.load("data/imagem/tela_fundo.png")
         background = pygame.transform.smoothscale(background, (self.width, self.height))
         self.screen.blit(background, (0, 0))
 
@@ -167,7 +172,7 @@ class Rodadas:
 
     #Desenha a Tela 
     def draw(self):
-        self.screen.fill(stylo.Colors.WHITE)
+        self.draw_background()
         self.draw_Title()
         self.draw_Text()
         self.draw_scoreboard()

@@ -10,13 +10,14 @@ class PlayerState(Enum):
     GENERATOR_CARDS = auto()
 
 class PlayerScreen:
-    def __init__(self, screen, width, height):
+    def __init__(self, screen, width, height, difficulty):
         self.screen = screen
         self.width = width
         self.height = height
         self.font = stylo.Fonts()
         self.input_name = ""
         self.player_names = []
+        self.difficulty = difficulty
     #Buttons
         self.add_button = stylo.Button(self.width/6, 450, 200, 50, stylo.Colors.RED, "Adicionar", stylo.Colors.WHITE, stylo.Fonts.BUTTON_FONT)
         self.remove_button = stylo.Button(self.width/6 + 300, 450, 200, 50, stylo.Colors.GREEN, "Remover", stylo.Colors.WHITE, stylo.Fonts.BUTTON_FONT)
@@ -24,6 +25,7 @@ class PlayerScreen:
     # Initialize input_boxes and box_colors
         self.input_boxes = [pygame.Rect(self.width/6, self.height//2.3, self.width/6 +372, 50)]
         self.box_colors = [stylo.Colors.GREY]
+
     #Tela de criação de jogador
         self.state = 2
         
@@ -84,8 +86,7 @@ class PlayerScreen:
                         # Adiciona o jogador
                         self.add_player(self.input_name)
                         if len(self.player_names) == 1:
-                            self.state = "Generator_cards"
-                            self.screen_card = ScreenCard(self.screen,self.player_names, self.state)
+                            self.screen_card = ScreenCard(self.screen,self.player_names, self.state, self.difficulty)
                             self.screen_card.run()
 
                     # se clicar no botão de remover
@@ -98,8 +99,7 @@ class PlayerScreen:
                         self.add_player(self.input_name)
                         if len(self.player_names) == 1:
                             #Ir para Gerador de cartas
-                            self.state = "Generator_cards"
-                            self.cards = ScreenCard(self.player_names, self.screen, self.state)
+                            self.cards = ScreenCard(self.player_names, self.screen, self.state ,self.difficulty)
                             self.cards.run()
 
                     elif event.key == pygame.K_BACKSPACE:

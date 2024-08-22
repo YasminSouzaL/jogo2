@@ -42,14 +42,19 @@ class MainMenu:
         
         print(self.difficulty)
 
-        if self.difficulty == 'easy':
+        if self.difficulty == 'local':
             print('Iniciar jogo contra outra pessoa')
-            player_creation_screen = PlayerCreationScreen(self.surface, self.width, self.height)  
+            player_creation_screen = PlayerCreationScreen(self.surface, self.width, self.height, difficulty=0)  
             player_creation_screen.run()
 
         if self.difficulty == 'hard':
             print('Iniciar jogo contra o computador')
-            player_screen = PlayerScreen(self.surface, self.width, self.height)
+            player_screen = PlayerScreen(self.surface, self.width, self.height, difficulty=2)
+            player_screen.run()
+
+        if self.difficulty == 'normal':
+            print('Iniciar jogo contra o computador')
+            player_screen = PlayerScreen(self.surface, self.width, self.height, difficulty=1)
             player_screen.run()
         
         else:
@@ -69,7 +74,7 @@ class MainMenu:
             theme=pygame_menu.themes.THEME_DARK)
 
         menu.add.button('Jogar', self.start_the_game)
-        menu.add.selector('Dificuldade: ', [('Easy', 'easy'),  ('Hard', 'hard')], onchange=self.set_difficulty)
+        menu.add.selector('Dificuldade: ', [('Local', 'local'), ('Normal', 'normal') ,('Hard', 'hard')], onchange=self.set_difficulty)
         menu.add.button('Regras', self.rules)
         menu.add.button('Sair', pygame_menu.events.EXIT)
 
@@ -79,7 +84,7 @@ menu = MainMenu()
 menu.setup_menu()
 
 
-# Adicionar getter e setters no ScreenRules.py
+# Adicionar getter e setters no ScreenRules.py (CORRETO)
 
 # def set_difficulty(value, difficulty):
 
