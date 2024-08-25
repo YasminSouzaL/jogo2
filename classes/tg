@@ -1,47 +1,131 @@
+'''
+    Criar ideia da maquina jogar com base em um algoritmo de decisão
+    screen_card = ScreenCard(self.player_cards e self.difficulty)
+    screen_card.run()
+    O computador tem duas Fases : Uma aleatoria e uma que ele tentar sempre ganhar a 1 rodada 
+    Isso é definida pelo nilve de dificuldade tipo medio(1), dificil(2)
+
+'''
+
 import os
 import pygame
-from classes.Deck import Deck
+import random
 from classes.Card import Card
-from classes.Rodadas import Rodadas
-from classes.enemy import Enemy
-from stylos import stylo
+from classes.Hand import Hand
+from classes.Deck import Deck
 
-pygame.init()
 
-class RodadasPC:
-    def __init__(self, player_names, player_cards, card_images, cards_now_call_back, difficulty,width, height):
-        self.player_names = player_names
-        self.player_cards = player_cards
-        self.card_images = card_images
-        self.cardsnow = cards_now_call_back
-        self.width = width
-        self.height = height
-        self.deck = Deck()
-        self.screen = pygame.display.set_mode((self.width, self.height))
+class Enemy:
+    def __init__(self, difficulty):
+        self.enemy = ['PC']
+        self.enemy_card = self.generate_enemy_cards()
         self.difficulty = difficulty
-        print("A dificuldade é:", self.difficulty)
-        print("Estou na tela RODADAPC")
+        self.hand = Hand()
+        self.deck = Deck()
 
-    #Desenha o título
-    def draw_Title(self):
-        title = stylo.TextTitle("Rodadas com PC", stylo.Fonts.TITLE_FONT, stylo.Colors.RED, self.width // 2, self.height // 7)
-        title.draw(self.screen)
+    def generate_enemy_cards(self):
+        enemy_card = {}
+        for enemy in self.enemy:
+            enemy_card[enemy] = self.deck.deal_hand(3)
+        return enemy_card
+    
+    def load_card_images(self):
+        pygame.init()
+        suits = ['Copas', 'Espadas', 'Paus', 'Ouro']
+        values = ['4', '5', '6', '7', 'Q', 'J', 'K', 'As', '2', '3']
+        base_path = "data/imagem/card"
+        card_images = {}
+        for suit in suits:
+            for value in values:
+                card_name = f"{value}_{suit}.png"
+                card_path = os.path.join(base_path, card_name)
+                if os.path.exists(card_path):
+                    try:
+                        card_image = pygame.image.load(card_path)
+                        card_image = pygame.transform.scale(card_image, (self.card_width, self.card_height))
+                        card_images[f"{value}_{suit}"] = card_image
+                    except pygame.error as e:
+                        print(f"Erro ao carregar a imagem: {card_path}. Erro: {e}")
+                else:
+                    print(f"Arquivo não encontrado: {card_path}")
+        return card_images
 
-    #Trazer o COmputador
-    # Enemy.play() é uma função que retorna uma carta
+
+    def play(self):
+        if self.difficulty == 1:
+            return self.play_random()
+        elif self.difficulty == 2:
+            return self.play_smart()
+        else:
+            raise ValueError("Dificuldade inválida.")
+    
+    #Jogada aleatoria
+    def play_random(self):
+        if len(self.hand) == 0:
+            return None
+        return random.choice(self.hand)
+    
 
 
-    def draw(self):
-        self.screen.fill(stylo.Colors.WHITE)
-        self.draw_Title()
 
-    def run(self):
-        running = True
-        while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-            self.draw()
-            pygame.display.flip()  
-        pygame.quit()  
+    def play(self):
+        if not self.hand.cards:
+            print("O inimigo não tem mais cartas.")
+            return None
 
+        print(f"Cartas na mão do inimigo antes de jogar: {self.hand.cards}")
+        card_to_play = self.hand.throw_card()
+        print(f"O inimigo jogou: {card_to_play}")
+
+        if card_to_play not in self.hand.cards:
+            print(f"Erro: Carta {card_to_play} não encontrada na mão.")
+            return None
+
+        self.hand.remove_card(card_to_play)
+        print(f"Cartas na mão do inimigo após jogar: {self.hand.cards}")
+        print(f"Carta {card_to_play} removida com sucesso.")
+        return card_to_play
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    #Jogada inteligente tentando sempre ganhar a rodada
+    def play_smart(self):
+        if len(self.hand) == 0:
+            return None
+        # Pega a carta mais alta da mão
+        return max(self.hand)
+    
+    #Lembrar de fazer a função de remover a carta da mão
+    def remove_card(self, card):
+        self.hand.remove(card)
+
+    #levar as cartas e o nivel de dificuldade para RodadasPc
+    def get_enemy(self):
+        return self.enemy
+    
+    def set_enemy(self, enemy):
+        self.enemy = enemy
+
+    def get_enemy_card(self):
+        return self.enemy_card
+    
+    def get_enemy_card_value(self):
+        return self.enemy_card_value
+    
+    def get_enemy_card_suit(self):
+        return self.enemy_card_suit
+
+
+    
+    

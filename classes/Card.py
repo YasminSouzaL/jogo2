@@ -21,6 +21,9 @@ class Card:
 
     def __str__(self):
         return f'{self.value}_{self.suit}'
+    
+    def __eq__(self, other):
+        return self.suit == other.suit and self.value == other.value
 
     def __repr__(self):
         return f'{self.value}_{self.suit}'

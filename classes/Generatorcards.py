@@ -5,13 +5,14 @@ from classes.Deck import Deck
 from classes.Card import Card
 from classes.Rodadas import Rodadas
 from classes.Rodada_pc import RodadasPC
+from classes.enemy import Enemy
 from stylos import stylo
 
 pygame.init()
 
 class GameState(Enum):
-    PLAYER_CREATION = 1
-    PLAYER_VS_COMPUTER = 2
+    PLAYER_VS_COMPUTER = 2 
+    PLAYER_VS_PLAYER = 1
     RODADAS = 3
     RODADAS_PC = 4
 
@@ -19,9 +20,9 @@ class ScreenCard:
     '''
     Classe ScreenCard responsável por gerar e gerenciar as cartas para os jogadores.
 
-    Ela tem dois estados possíveis:
-    - Gerar cartas para 2 jogadores
-    - Gerar cartas para 1 jogador
+    Ela tem três estados possíveis:
+        - Gerar cartas para 2 jogadores
+        - Gerar cartas para 1 jogador
     '''
 
     def __init__(self, player_names, screen, state: GameState , difficulty):
@@ -38,7 +39,28 @@ class ScreenCard:
         self.cardnow = None
         self.difficulty = difficulty
        
-    def check_player(self):
+    # def check_player(self):
+    #     if self.state == 1:
+    #         print("Jogadores:", self.player_names)
+    #         if len(self.player_names) >= 2:
+    #             self.deck.shuffle()
+    #             self.player_cards = self.generate_player_cards()
+    #             print("Cartas geradas para os jogadores:", self.player_cards)
+    #             return True
+    #         else:
+    #             print("Não há jogadores suficientes.")
+    #             return False
+    #     elif self.state == 2:
+    #         print("Jogadores:", self.player_names)
+    #         if len(self.player_names) == 1:
+    #             self.deck.shuffle()
+    #             self.player_cards = self.generate_player_cards()
+    #             print("Cartas geradas para os jogadores:", self.player_cards)
+    #             return True
+    #         else:
+    #             print("Não há jogadores suficientes.")
+    #             return False
+    def check_player(self): 
         if self.state == 1:
             print("Jogadores:", self.player_names)
             if len(self.player_names) >= 2:
@@ -94,13 +116,15 @@ class ScreenCard:
                 if self.check_player():
                     self.cardnow = self.generate_player_cards
                     self.state = GameState.RODADAS
-                    self.rounds = Rodadas(self.player_names, self.player_cards, self.card_images, self.cardnow,self.difficulty, 800, 600)
+                    self.rounds = Rodadas(self.player_names, self.player_cards, self.card_images, self.cardnow, self.difficulty,800, 600)
                     self.rounds.run()
                     break
                 
             elif self.state == 2:
                 if self.check_player():
+                    self.cardnow = self.generate_player_cards
                     self.state = GameState.RODADAS_PC
+                    self.enemys = Enemy(self.difficulty)
                     self.round2 = RodadasPC(self.player_names, self.player_cards, self.card_images,self.cardnow,self.difficulty,800, 600)
                     self.round2.run()
                     break

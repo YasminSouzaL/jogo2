@@ -10,7 +10,7 @@ from stylos import stylo
 import pygame
 
 class Rodadas:
-    def __init__(self,player_names, player_cards, card_images, cards_now_call_back,difficulty, width, height):
+    def __init__(self, player_names, player_cards, card_images, cards_now_call_back,difficulty, width, height):
         self.hand = Hand()
         self.running = True
         self.player_names = player_names
@@ -37,7 +37,7 @@ class Rodadas:
             raise ValueError("A dificuldade deve ser 0")
 
     #Botões
-        self.buttonTruco = stylo.Button(self.width/6, 500, 200, 50, stylo.Colors.RED, "Truco", stylo.Colors.WHITE, stylo.Fonts.BUTTON_FONT)
+        self.buttonTruco = stylo.ButtonTruco(self.width/6, 500, 200, 50, stylo.Colors.RED, "Truco", stylo.Colors.WHITE, stylo.Fonts.BUTTON_FONT)
         self.buttonAceitar = stylo.Button(self.width/6, 500, 200, 50, stylo.Colors.GREEN, "Aceitar", stylo.Colors.WHITE, stylo.Fonts.BUTTON_FONT)
         self.buttonCorrer = stylo.Button(self.width/6 + 300, 500, 200, 50, stylo.Colors.BLUE, "Correr", stylo.Colors.WHITE, stylo.Fonts.BUTTON_FONT)
     
