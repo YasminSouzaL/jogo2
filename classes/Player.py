@@ -86,7 +86,7 @@ class PlayerScreen:
                         # Adiciona o jogador
                         self.add_player(self.input_name)
                         if len(self.player_names) == 1:
-                            self.screen_card = ScreenCard(self.screen,self.player_names, self.state, self.difficulty)
+                            self.screen_card = ScreenCard(self.player_names, self.screen, self.state, self.difficulty)
                             self.screen_card.run()
 
                     # se clicar no botão de remover
@@ -99,8 +99,8 @@ class PlayerScreen:
                         self.add_player(self.input_name)
                         if len(self.player_names) == 1:
                             #Ir para Gerador de cartas
-                            self.cards = ScreenCard(self.player_names, self.screen, self.state ,self.difficulty)
-                            self.cards.run()
+                            self.screen_card = ScreenCard(self.player_names, self.screen, self.state, self.difficulty)
+                            self.screen_card.run()
 
                     elif event.key == pygame.K_BACKSPACE:
                         self.input_name = self.input_name[:-1]

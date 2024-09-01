@@ -2,6 +2,7 @@ class Pontuacao:
     def __init__(self, player_names):
         self.scores = {}
         self.points = {player: 0 for player in player_names}
+        self.points['PC'] = 0
 
     def adicionar_pontos(self, player, pontos):
         self.points[player] += pontos

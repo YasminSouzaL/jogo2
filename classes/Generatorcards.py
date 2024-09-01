@@ -19,13 +19,14 @@ class GameState(Enum):
 class ScreenCard:
     '''
     Classe ScreenCard responsável por gerar e gerenciar as cartas para os jogadores.
-
     Ela tem três estados possíveis:
         - Gerar cartas para 2 jogadores
         - Gerar cartas para 1 jogador
     '''
 
-    def __init__(self, player_names, screen, state: GameState , difficulty):
+    def __init__(self, player_names, screen, state: GameState, difficulty):
+        if not isinstance(player_names, list):
+            raise ValueError("player_names deve ser uma lista de strings.")
         self.screen = screen
         self.running = True
         self.deck = Deck()
@@ -38,30 +39,9 @@ class ScreenCard:
         self.state = state
         self.cardnow = None
         self.difficulty = difficulty
-       
-    # def check_player(self):
-    #     if self.state == 1:
-    #         print("Jogadores:", self.player_names)
-    #         if len(self.player_names) >= 2:
-    #             self.deck.shuffle()
-    #             self.player_cards = self.generate_player_cards()
-    #             print("Cartas geradas para os jogadores:", self.player_cards)
-    #             return True
-    #         else:
-    #             print("Não há jogadores suficientes.")
-    #             return False
-    #     elif self.state == 2:
-    #         print("Jogadores:", self.player_names)
-    #         if len(self.player_names) == 1:
-    #             self.deck.shuffle()
-    #             self.player_cards = self.generate_player_cards()
-    #             print("Cartas geradas para os jogadores:", self.player_cards)
-    #             return True
-    #         else:
-    #             print("Não há jogadores suficientes.")
-    #             return False
-    def check_player(self): 
-        if self.state == 1:
+
+    def check_player(self):
+        if self.state == GameState.PLAYER_VS_PLAYER.value:
             print("Jogadores:", self.player_names)
             if len(self.player_names) >= 2:
                 self.deck.shuffle()
@@ -71,7 +51,7 @@ class ScreenCard:
             else:
                 print("Não há jogadores suficientes.")
                 return False
-        elif self.state == 2:
+        elif self.state == GameState.PLAYER_VS_COMPUTER.value:
             print("Jogadores:", self.player_names)
             if len(self.player_names) == 1:
                 self.deck.shuffle()
@@ -89,7 +69,6 @@ class ScreenCard:
         return player_cards
 
     def load_card_images(self):
-        pygame.init()
         suits = ['Copas', 'Espadas', 'Paus', 'Ouro']
         values = ['4', '5', '6', '7', 'Q', 'J', 'K', 'As', '2', '3']
         base_path = "data/imagem/card"
@@ -112,24 +91,25 @@ class ScreenCard:
     def run(self):
         print("Running Generatorcards")
         while self.running:
-            if self.state == 1:
+            if self.state == GameState.PLAYER_VS_PLAYER.value:
                 if self.check_player():
-                    self.cardnow = self.generate_player_cards
+                    self.cardnow = self.generate_player_cards()
                     self.state = GameState.RODADAS
-                    self.rounds = Rodadas(self.player_names, self.player_cards, self.card_images, self.cardnow, self.difficulty,800, 600)
+                    self.rounds = Rodadas(self.player_names, self.player_cards, self.card_images, self.cardnow, self.difficulty, 800, 600)
                     self.rounds.run()
                     break
                 
-            elif self.state == 2:
+            elif self.state == GameState.PLAYER_VS_COMPUTER.value:
                 if self.check_player():
-                    self.cardnow = self.generate_player_cards
+                    self.cardnow = self.generate_player_cards()
                     self.state = GameState.RODADAS_PC
-                    self.enemys = Enemy(self.difficulty)
-                    self.round2 = RodadasPC(self.player_names, self.player_cards, self.card_images,self.cardnow,self.difficulty,800, 600)
+                    enemy_instance = Enemy(self.difficulty)
+                    enemy_card = enemy_instance.get_enemy_card()
+                    print("ENEMY:", enemy_card)
+                    self.round2 = RodadasPC(self.player_names, self.player_cards, self.card_images, self.cardnow, self.difficulty, 800, 600, enemy_card)
                     self.round2.run()
                     break
             else:
                 print("Estado inválido!")
                 self.running = False
                 break
-

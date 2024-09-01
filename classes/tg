@@ -128,4 +128,34 @@ class Enemy:
 
 
     
-    
+    def run(self):
+        print("Running Rodadas PC")
+        self.running = True
+        while self.running:
+            if len(self.player_cards[self.player_names[0]]) == 0:
+                print(f"Jogador {self.player_names[0]} não tem mais cartas. Jogo encerrado.")
+                self.running = False
+                continue
+
+            if len(self.enemy.hand.cards) == 0:
+                print("O inimigo não tem mais cartas. Jogo encerrado.")
+                self.running = False
+                continue
+
+            self.draw()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        player_card = self.cardsnow(self.player_names[0])
+                        enemy_card = Enemy.play()
+                        self.draw_cards(player_card, enemy_card)
+                         # self.check_round_winner(player_card, enemy_card)
+                         # self.hander_winner(player_card, enemy_card)
+                        self.player_cards[self.player_names[0]].remove(player_card)
+                        self.enemy.hand.cards.remove(enemy_card)
+                        self.draw()
+                    else:
+                            print("Nenhuma carta foi jogada pelo inimigo.")
+            pygame.display.flip()

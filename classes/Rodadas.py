@@ -122,9 +122,6 @@ class Rodadas:
             self.round_winners.append(round_winner)
             print(f"Ganhador da rodada: {round_winner}")
 
-        
-
-
     #Lógica dos botões
     '''
         Quando o botão truco é clicado, o botão aceitar e correr aparecem
@@ -219,7 +216,6 @@ class Rodadas:
                                     
                                     # Chamar cardsnow para gerar mais cartas
                                     self.player_cards = self.cardsnow()     
-
                             break
 
                     if self.check_game_winner():
