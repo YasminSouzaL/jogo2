@@ -16,11 +16,30 @@ class Colors:
 
 # Fonte
 class Fonts:
-    pygame.font.init()
-    MAIN_FONT = pygame.font.Font("data/font/DS-DIGIB.TTF", 32)
-    CUSTOM_FONT = pygame.font.Font("data/font/stocky.ttf", 32)
-    TITLE_FONT = pygame.font.Font("data/font/stocky.ttf", 36)
-    BUTTON_FONT = pygame.font.Font(None, 36)
+    @staticmethod
+    def init():
+        pygame.font.init()  # Inicializa o sistema de fontes do Pygame
+
+    @staticmethod
+    def get_main_font():
+        return pygame.font.Font("data/font/DS-DIGIB.TTF", 32)
+
+    @staticmethod
+    def get_custom_font():
+        return pygame.font.Font("data/font/stocky.ttf", 32)
+
+    @staticmethod
+    def get_title_font():
+        return pygame.font.Font("data/font/stocky.ttf", 36)
+
+    @staticmethod
+    def get_button_font():
+        return pygame.font.Font(None, 36)
+
+    @staticmethod
+    def get_font_rules():
+        return pygame.font.Font(None, 22)  
+
 
 # Configurações da tela
 class ScreenConfig:
@@ -91,6 +110,7 @@ class ButtonTruco:
         self.text = text
         self.text_color = text_color
         self.font = font
+        self.click_sound = pygame.mixer.Sound("data/music/truco.mp3")
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, self.rect)
@@ -101,6 +121,7 @@ class ButtonTruco:
     def is_clicked(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
+                self.click_sound.play()
                 return True
         return False
     

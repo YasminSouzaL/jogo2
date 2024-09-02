@@ -7,9 +7,13 @@ class ScreenRules:
         self.width = width
         self.height = height
         self.screen = screen
-        self.button = stylo.Button(100, 500, 200, 50, stylo.Colors.RED, "Voltar", stylo.Colors.WHITE, stylo.Fonts.BUTTON_FONT)
+        self.main_font = stylo.Fonts.get_main_font() 
+        self.Title_fonte = stylo.Fonts.get_title_font()
+        self.button_fonte = stylo.Fonts.get_button_font() 
+        self.rules_font = stylo.Fonts.get_font_rules()
+        self.button = stylo.Button(100, 500, 200, 50, stylo.Colors.RED, "Voltar", stylo.Colors.WHITE,self.button_fonte )
 
-        self.font = pygame.font.Font(None, 36)
+        self.font = self.main_font
         self.__regras = [
             "Rodada: uma sequência de 4 jogadas, onde cada jogador joga uma carta;",
             "Mão: composta de duas a três rodadas, e vale inicialmente 2 pontos;",
@@ -32,7 +36,7 @@ class ScreenRules:
         text.draw(screen)
 
     def draw_body(self, screen):
-        text_font_to_rules = pygame.font.Font(None, 28)  # Define the font
+        text_font_to_rules = self.rules_font
 
         y_offset = 145
         for i, regra in enumerate(self.get_regras()):

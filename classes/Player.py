@@ -14,13 +14,15 @@ class PlayerScreen:
         self.screen = screen
         self.width = width
         self.height = height
-        self.font = stylo.Fonts()
+        self.main_font = stylo.Fonts.get_main_font() 
+        self.Title_fonte = stylo.Fonts.get_title_font()
+        self.button = stylo.Fonts.get_button_font()
         self.input_name = ""
         self.player_names = []
         self.difficulty = difficulty
     #Buttons
-        self.add_button = stylo.Button(self.width/6, 450, 200, 50, stylo.Colors.RED, "Adicionar", stylo.Colors.WHITE, stylo.Fonts.BUTTON_FONT)
-        self.remove_button = stylo.Button(self.width/6 + 300, 450, 200, 50, stylo.Colors.GREEN, "Remover", stylo.Colors.WHITE, stylo.Fonts.BUTTON_FONT)
+        self.add_button = stylo.Button(self.width/6, 450, 200, 50, stylo.Colors.RED, "Adicionar", stylo.Colors.WHITE, self.button)
+        self.remove_button = stylo.Button(self.width/6 + 300, 450, 200, 50, stylo.Colors.GREEN, "Remover", stylo.Colors.WHITE, self.button)
 
     # Initialize input_boxes and box_colors
         self.input_boxes = [pygame.Rect(self.width/6, self.height//2.3, self.width/6 +372, 50)]
@@ -35,11 +37,11 @@ class PlayerScreen:
         self.screen.blit(background, (0, 0))
     
     def draw_title(self):
-        title = stylo.TextTitle("Tela de Jogador", stylo.Fonts.TITLE_FONT, stylo.Colors.RED, self.width // 2, self.height // 6)
+        title = stylo.TextTitle("Tela de Jogador", self.Title_fonte, stylo.Colors.RED, self.width // 2, self.height // 6)
         title.draw(self.screen)
 
     def draw_input(self):
-        text = stylo.Text("Digite um Jogador:", stylo.Fonts.MAIN_FONT, stylo.Colors.BLACK, self.width // 2, self.height // 3)
+        text = stylo.Text("Digite um Jogador:", self.main_font, stylo.Colors.BLACK, self.width // 2, self.height // 3)
         text.draw(self.screen)
         # desenha o "box" de input
         for box, color in zip(self.input_boxes, self.box_colors):
@@ -48,7 +50,12 @@ class PlayerScreen:
         font = pygame.font.Font(None, 32)
         text_surface = font.render(self.input_name, True, stylo.Colors.BLACK)
         self.screen.blit(text_surface, (self.input_boxes[0].x + 5, self.input_boxes[0].y + 5))
-        
+
+    def draw_background(self):
+        background = pygame.image.load("data/imagem/background.png")
+        background = pygame.transform.smoothscale(background, (self.width, self.height))
+        self.screen.blit(background, (0, 0))
+
     def draw_buttons(self):
         self.add_button.draw(self.screen)
         self.remove_button.draw(self.screen)
@@ -65,7 +72,7 @@ class PlayerScreen:
             self.player_names.pop()
 
     def draw(self):
-        self.screen.fill(stylo.Colors.WHITE)
+        self.draw_background()
         self.draw_title()
         self.draw_input()
         self.draw_buttons()

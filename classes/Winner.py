@@ -7,8 +7,9 @@ class Winner:
         self.width = 800
         self.height = 600
         self.screen = pygame.display.set_mode((self.width, self.height))
-        self.font = pygame.font.Font(None, 55)
-        self.button = stylo.Button(100, 400, 200, 50, stylo.Colors.RED, "Menu", stylo.Colors.WHITE, stylo.Fonts.BUTTON_FONT)
+        self.Main_fonte = stylo.Fonts.get_main_font()
+        self.title_fonte = stylo.Fonts.get_title_font()
+        self.button = stylo.Button(100, 400, 200, 50, stylo.Colors.RED, "Menu", stylo.Colors.WHITE, self.Main_fonte)
 
     def backgound(self):
         background = pygame.image.load("data/imagem/wallpaper.png")
@@ -22,8 +23,8 @@ class Winner:
     
     def draw(self, screen):
         self.backgound()
-        stylo.TextTitle("Vencedor", stylo.Fonts.TITLE_FONT, stylo.Colors.RED, self.width // 2, self.height // 6).draw(screen)
-        stylo.Text(f"O vencedor é: {self.winner}", self.font, stylo.Colors.BLACK, self.width // 2, self.height // 3).draw(screen)
+        stylo.TextTitle("Vencedor", self.title_fonte, stylo.Colors.RED, self.width // 2, self.height // 6).draw(screen)
+        stylo.Text(f"O vencedor é: {self.winner}", self.title_fonte, stylo.Colors.BLACK, self.width // 2, self.height // 3).draw(screen)
 
     def run(self):
         running = True

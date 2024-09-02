@@ -2,10 +2,10 @@ import pygame
 from classes.Deck import Deck
 from classes.Card import Card
 from classes.Hand import Hand
+from classes.Winner import Winner
+from classes.enemy import Enemy
 from classes.Pontuacao import Pontuacao
 from stylos import stylo
-
-pygame.init()
 
 class RodadasPC:
     def __init__(self, player_names, player_cards, card_images, cards_now_call_back, difficulty, width, height, enemy_card):
@@ -13,36 +13,32 @@ class RodadasPC:
         self.player_cards = player_cards
         self.cardsnow = cards_now_call_back
         self.difficulty = difficulty
-        
-        from classes.enemy import Enemy
+        self.deck = Deck()
         self.enemy = Enemy(self.difficulty)
         
         self.card_images = card_images
         self.width = width
         self.height = height
-        
+        self.main_font = stylo.Fonts.get_main_font() 
+        self.Title_fonte = stylo.Fonts.get_title_font() 
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.current_round = 0
         self.round_cards = []
         self.current_player_index = 0
-        self.current_enemy_index = 0
         self.enemy_card = enemy_card
         self.pontuacao = Pontuacao(self.player_names)
         self.selected_cards = {player: None for player in self.player_names}
         self.selected_cards['PC'] = None  
-        self.running = True  # Adiciona o atributo running
-
+        self.running = True
+        self.winner = None  # Inicializar o atributo winner
         print("Estou na tela RODADAPC")
-        print("teste ENEMY:", self.enemy_card)
-        print("Teste player:", self.player_cards)
-        print("Player Names:", self.player_names)
-        
+
     def draw_Title(self):
-        title = stylo.TextTitle("Rodadas com PC", stylo.Fonts.TITLE_FONT, stylo.Colors.RED, self.width // 2, self.height // 7)
+        title = stylo.TextTitle("Rodadas com PC", self.Title_fonte, stylo.Colors.RED, self.width // 2, self.height // 7)
         title.draw(self.screen)
 
     def draw_Text(self):
-        text = stylo.Text("Vez de: " + self.player_names[self.current_player_index], stylo.Fonts.MAIN_FONT, stylo.Colors.BLACK, self.width // 2, self.height // 3)
+        text = stylo.Text("Vez de: " + self.player_names[self.current_player_index], self.main_font, stylo.Colors.BLACK, self.width // 2, self.height // 3)
         text.draw(self.screen)
 
     def draw_scoreboard(self):
@@ -50,15 +46,20 @@ class RodadasPC:
         enemy_points = self.pontuacao.get_pontos("PC")
         
         for player, points in player_points.items():
-            text = stylo.Text(f"{player}: {points} x PC: {enemy_points}", stylo.Fonts.MAIN_FONT, stylo.Colors.BLACK, self.width // 2, self.height // 5)
+            text = stylo.Text(f"{player}: {points} x PC: {enemy_points}", self.main_font, stylo.Colors.BLACK, self.width // 2, self.height // 5)
             text.draw(self.screen)
+
+    def generate_new_cards(self):
+        new_cards = {}
+        for player in self.player_names:
+            new_cards[player] = self.deck.deal_hand(3)
+        return new_cards
 
     def draw_Cards(self):
         x, y_player = 150, 350
         x_enemy, y_enemy = 150, 150
         self.round_cards = []
         
-        # Desenha as cartas do jogador
         for card in self.player_cards[self.player_names[0]]:
             card_image = self.card_images.get(str(card))
             if card_image:
@@ -68,8 +69,7 @@ class RodadasPC:
                 self.round_cards.append((card_rect, card))
                 x += 200
         
-        # Desenha as cartas do inimigo (viradas para baixo)
-        for card in self.enemy_card['PC']:  # Corrigido aqui
+        for card in self.enemy.hand.cards:
             card_image = self.card_images.get(str(card))
             if card_image:
                 card_rect = card_image.get_rect()
@@ -81,21 +81,45 @@ class RodadasPC:
     def check_round_winner(self):
         player_card = self.selected_cards[self.player_names[0]]
         enemy_card = self.selected_cards['PC']
+
         if player_card and enemy_card:
             if player_card.value > enemy_card.value:
                 return self.player_names[0]
-            else:
+            elif player_card.value < enemy_card.value:
                 return 'PC'
+            else:
+                return 'Empate'
+        return None
+    
+    def check_game_winner(self):
+        player_points = {player: self.pontuacao.get_pontos(player) for player in self.player_names}
+        max_points = max(player_points.values())
+        for player, points in player_points.items():
+            if points >= 12:
+                self.winner = player
+                return self.winner
         return None
 
     def enemy_turn(self):
-        enemy_card = self.enemy.play()
-        
-        if enemy_card in self.enemy_card['PC']:
-            self.enemy_card['PC'].remove(enemy_card)
-            print(f"Carta {enemy_card} removida com sucesso do inimigo.")
+        if self.enemy.hand.cards:
+            enemy_card = self.enemy.play(self.current_round)
+            print(f"O inimigo jogou: {enemy_card}")
+            if enemy_card:
+                self.selected_cards['PC'] = enemy_card
+            else:
+                print("Erro: O inimigo não conseguiu jogar uma carta.")
         else:
-            print(f"Erro: A carta {enemy_card} não está na lista de cartas do inimigo.")
+            print("Erro: O inimigo não tem mais cartas para jogar.")
+
+        print(f"Cartas restantes do inimigo: {self.enemy.hand.cards}")
+
+    def remove_card(self, player, card):
+        if card in self.player_cards[player]:
+            self.player_cards[player].remove(card)
+            print(f"Carta {card} removida com sucesso.")
+        else:
+            print(f"Erro: A carta {card} não está na lista de cartas do {player}.")
+        print(f"Depois da remoção - Cartas do {player}: {self.player_cards[player]}")
 
     def draw(self):
         self.screen.fill(stylo.Colors.WHITE)
@@ -104,14 +128,16 @@ class RodadasPC:
         self.draw_Cards()
         self.draw_scoreboard()
         pygame.display.flip()
-
+    
     def run(self):
         print("Running RodadasPC")
         while self.running:
-            self.draw()  # Atualiza a tela ao desenhar as cartas e outros elementos
+            self.draw()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
+                    pygame.quit()
+                    return
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     for card_rect, card in self.round_cards:
@@ -119,26 +145,47 @@ class RodadasPC:
                             current_player = self.player_names[self.current_player_index]
                             print(f"Carta selecionada: {card}")
 
-                            # Verifica se a carta está na lista do jogador antes de tentar removê-la
                             if card in self.player_cards[current_player]:
-                                self.player_cards[current_player].remove(card)
                                 self.selected_cards[current_player] = card
-                                print(f"Carta {card} removida com sucesso.")
-                                self.enemy_turn()  # Adiciona o turno do computador
-                            else:
-                                print(f"Erro: A carta {card} não está na lista de cartas do jogador.")
+                                self.remove_card(current_player, card)
 
-                            if all(self.selected_cards.values()):  # Verifica se ambos jogaram
-                                round_winner = self.check_round_winner()
-                                print(f"Vencedor da rodada: {round_winner}")
-                                self.current_round += 1
-                                self.selected_cards = {player: None for player in self.player_names}
-                                self.selected_cards['PC'] = None
+                                # PC joga automaticamente após o jogador
+                                self.enemy_turn()
 
-                                if all(len(cards) == 0 for cards in self.player_cards.values()):
-                                    print("Acabaram as cartas")
-                                    self.running = False
-                                    continue
-                                self.draw_scoreboard()
-            pygame.time.Clock().tick(60)
-        pygame.quit()
+                                # Verificar o vencedor da rodada
+                                if all(self.selected_cards.values()):
+                                    round_winner = self.check_round_winner()
+                                    print(f"Vencedor da rodada: {round_winner}")
+
+                                    if round_winner and round_winner != 'Empate':
+                                        self.pontuacao.adicionar_pontos(round_winner, 1)
+                                        print(f"Pontos atualizados - {round_winner}: {self.pontuacao.get_pontos(round_winner)}")
+
+                                    self.current_round += 1
+
+                                    # Limpar as cartas selecionadas para a próxima rodada
+                                    self.selected_cards = {player: None for player in self.player_names}
+                                    self.selected_cards['PC'] = None
+
+                                    # Verificar se todas as cartas foram jogadas e gerar novas cartas
+                                    if all(len(cards) == 0 for cards in self.player_cards.values()):
+                                        print("Acabaram as cartas")
+                                        for player in self.player_names:
+                                            pontos_atual = self.pontuacao.get_pontos(player)
+                                            pontos_faltando = max(0, 12 - pontos_atual)
+                                            print(f"Jogador {player} precisa de {pontos_faltando} pontos para ganhar")
+
+                                        self.player_cards = self.generate_new_cards()
+                                        self.enemy.hand.cards = self.deck.deal_hand(3)
+
+                                        print(f"Novas cartas geradas para o jogador: {self.player_cards}")
+                                        print(f"Novas cartas geradas para o inimigo: {self.enemy.hand.cards}")
+
+                                    # Verificar se o jogo deve continuar
+                                    if self.check_game_winner():
+                                        self.running = False
+                                        winner_screen = Winner(self.winner)
+                                        winner_screen.run()
+                                        print("Fim do jogo")
+                                    
+                                    break

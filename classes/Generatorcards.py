@@ -104,8 +104,8 @@ class ScreenCard:
                     self.cardnow = self.generate_player_cards()
                     self.state = GameState.RODADAS_PC
                     enemy_instance = Enemy(self.difficulty)
-                    enemy_card = enemy_instance.get_enemy_card()
-                    print("ENEMY:", enemy_card)
+                    #enemy_card = enemy_instance.get_enemy_card()
+                    enemy_card = enemy_instance.initialize_hand()
                     self.round2 = RodadasPC(self.player_names, self.player_cards, self.card_images, self.cardnow, self.difficulty, 800, 600, enemy_card)
                     self.round2.run()
                     break

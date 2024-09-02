@@ -8,7 +8,6 @@ class PlayerCreationState(Enum):
     PLAYER_CREATION = auto()
     GENERATOR_CARDS = auto()
 
-
 class PlayerCreationScreen:
     def __init__(self, screen, width, height, difficulty):
         self.screen = screen
@@ -18,9 +17,12 @@ class PlayerCreationScreen:
         self.input_name = ""
         self.player_names = []
         self.difficulty = difficulty
+        self.main_font = stylo.Fonts.get_main_font() 
+        self.Title_fonte = stylo.Fonts.get_title_font()
+        self.button = stylo.Fonts.get_button_font() 
         # Buttons
-        self.add_button = stylo.Button(self.width/6, 450, 200, 50, stylo.Colors.RED, "Adicionar", stylo.Colors.WHITE, stylo.Fonts.BUTTON_FONT)
-        self.remove_button = stylo.Button(self.width/6 + 300, 450, 200, 50, stylo.Colors.GREEN, "Remover", stylo.Colors.WHITE, stylo.Fonts.BUTTON_FONT)
+        self.add_button = stylo.Button(self.width/6, 450, 200, 50, stylo.Colors.RED, "Adicionar", stylo.Colors.WHITE, self.button)
+        self.remove_button = stylo.Button(self.width/6 + 300, 450, 200, 50, stylo.Colors.GREEN, "Remover", stylo.Colors.WHITE, self.button)
 
         # Initialize input_boxes and box_colors
         self.input_boxes = [pygame.Rect(self.width/6, self.height//2.3, self.width/6 +372, 50)]
@@ -28,6 +30,7 @@ class PlayerCreationScreen:
 
         #Tela de criação de jogador
         self.state = 1
+        print("PlayerCreationScreen")
 
     def draw_background(self):
         background = pygame.image.load("data/imagem/background.png")
@@ -35,12 +38,12 @@ class PlayerCreationScreen:
         self.screen.blit(background, (0, 0))
 
     def draw_title(self):
-        title = stylo.TextTitle("Tela de Jogador", stylo.Fonts.TITLE_FONT, stylo.Colors.RED, self.width // 2, self.height // 6)
+        title = stylo.TextTitle("Tela de Jogador",self.Title_fonte, stylo.Colors.RED, self.width // 2, self.height // 6)
         title.draw(self.screen)
 
     def draw_input(self):
         # desenha titulo e input
-        title_text = stylo.Text("Digite um Jogador:", stylo.Fonts.MAIN_FONT, stylo.Colors.BLACK, self.width // 2, self.height // 3)
+        title_text = stylo.Text("Digite um Jogador:", self.main_font, stylo.Colors.BLACK, self.width // 2, self.height // 3)
         title_text.draw(self.screen)
 
         # desenha o "box" de input
@@ -66,7 +69,6 @@ class PlayerCreationScreen:
 
     def add_player(self, player_name):
         print(f"Adicionado jogador: {player_name}")
-
         # Adiciona o jogador se o nome não for vazio e não estiver na lista
         if player_name and player_name not in self.player_names:
             self.player_names.append(player_name)
@@ -84,10 +86,8 @@ class PlayerCreationScreen:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-
                 # clique
                 if event.type == pygame.MOUSEBUTTONDOWN:
-
                     # se clicar no botão de adicionar
                     if self.add_button.rect.collidepoint(event.pos):
 
