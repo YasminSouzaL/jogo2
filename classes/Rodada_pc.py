@@ -38,7 +38,7 @@ class RodadasPC:
         title.draw(self.screen)
 
     def draw_Text(self):
-        text = stylo.Text("Vez de: " + self.player_names[self.current_player_index], self.main_font, stylo.Colors.BLACK, self.width // 2, self.height // 3)
+        text = stylo.Text("Vez de: " + self.player_names[self.current_player_index], self.main_font, stylo.Colors.BLACK, self.width // 2, self.height // 4)
         text.draw(self.screen)
 
     def draw_scoreboard(self):
