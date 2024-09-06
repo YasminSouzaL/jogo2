@@ -41,6 +41,12 @@ class RodadasPC:
         text = stylo.Text("Vez de: " + self.player_names[self.current_player_index], self.main_font, stylo.Colors.BLACK, self.width // 2, self.height // 4)
         text.draw(self.screen)
 
+    def draw_background(self):
+        background = pygame.image.load("data/imagem/tela_fundo.png")
+        background = pygame.transform.smoothscale(background, (self.width, self.height))
+        self.screen.blit(background, (0, 0))
+
+
     def draw_scoreboard(self):
         player_points = {player: self.pontuacao.get_pontos(player) for player in self.player_names}
         enemy_points = self.pontuacao.get_pontos("PC")
@@ -57,7 +63,7 @@ class RodadasPC:
 
     def draw_Cards(self):
         x, y_player = 150, 350
-        x_enemy, y_enemy = 150, 150
+        x_enemy, y_enemy = 150, 170
         self.round_cards = []
         
         for card in self.player_cards[self.player_names[0]]:
@@ -93,12 +99,14 @@ class RodadasPC:
     
     def check_game_winner(self):
         player_points = {player: self.pontuacao.get_pontos(player) for player in self.player_names}
-        max_points = max(player_points.values())
+        player_points['PC'] = self.pontuacao.get_pontos('PC')  # Adicionar PC na verificação
+        # Verificar se algum jogador ou o PC atingiu ou ultrapassou 12 pontos
         for player, points in player_points.items():
             if points >= 12:
-                self.winner = player
+                self.winner = player  # Armazenar o vencedor (jogador ou PC)
                 return self.winner
-        return None
+        return None 
+
 
     def enemy_turn(self):
         if self.enemy.hand.cards:
@@ -122,7 +130,7 @@ class RodadasPC:
         print(f"Depois da remoção - Cartas do {player}: {self.player_cards[player]}")
 
     def draw(self):
-        self.screen.fill(stylo.Colors.WHITE)
+        self.draw_background()
         self.draw_Title()
         self.draw_Text()
         self.draw_Cards()
@@ -144,29 +152,27 @@ class RodadasPC:
                         if card_rect.collidepoint(pygame.mouse.get_pos()):
                             current_player = self.player_names[self.current_player_index]
                             print(f"Carta selecionada: {card}")
-
                             if card in self.player_cards[current_player]:
                                 self.selected_cards[current_player] = card
                                 self.remove_card(current_player, card)
-
                                 # PC joga automaticamente após o jogador
                                 self.enemy_turn()
-
-                                # Verificar o vencedor da rodada
                                 if all(self.selected_cards.values()):
                                     round_winner = self.check_round_winner()
                                     print(f"Vencedor da rodada: {round_winner}")
-
                                     if round_winner and round_winner != 'Empate':
                                         self.pontuacao.adicionar_pontos(round_winner, 1)
                                         print(f"Pontos atualizados - {round_winner}: {self.pontuacao.get_pontos(round_winner)}")
-
-                                    self.current_round += 1
-
+                                    # Verificar se alguém atingiu 12 pontos e encerrar o jogo
+                                    if self.check_game_winner():
+                                        self.running = False
+                                        winner_screen = Winner(self.winner)
+                                        winner_screen.run()  # Exibir a tela de vencedor
+                                        print("Fim do jogo")
+                                        return  # Para garantir que o loop principal seja interrompido
                                     # Limpar as cartas selecionadas para a próxima rodada
                                     self.selected_cards = {player: None for player in self.player_names}
                                     self.selected_cards['PC'] = None
-
                                     # Verificar se todas as cartas foram jogadas e gerar novas cartas
                                     if all(len(cards) == 0 for cards in self.player_cards.values()):
                                         print("Acabaram as cartas")
@@ -174,18 +180,8 @@ class RodadasPC:
                                             pontos_atual = self.pontuacao.get_pontos(player)
                                             pontos_faltando = max(0, 12 - pontos_atual)
                                             print(f"Jogador {player} precisa de {pontos_faltando} pontos para ganhar")
-
                                         self.player_cards = self.generate_new_cards()
                                         self.enemy.hand.cards = self.deck.deal_hand(3)
-
                                         print(f"Novas cartas geradas para o jogador: {self.player_cards}")
                                         print(f"Novas cartas geradas para o inimigo: {self.enemy.hand.cards}")
-
-                                    # Verificar se o jogo deve continuar
-                                    if self.check_game_winner():
-                                        self.running = False
-                                        winner_screen = Winner(self.winner)
-                                        winner_screen.run()
-                                        print("Fim do jogo")
-                                    
-                                    break
+                                break

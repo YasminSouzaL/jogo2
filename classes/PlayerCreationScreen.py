@@ -78,14 +78,23 @@ class PlayerCreationScreen:
         if self.player_names:
             self.player_names.pop()
 
+    import sys
+
     def run(self):
         while self.state == 1:
-            self.draw() 
+            self.draw()
             for event in pygame.event.get():
-                # saida do jogo
                 if event.type == pygame.QUIT:
+                    try:
+                        self.load_instance.save_game(self)
+                        print("Jogo salvo com sucesso.")
+                    except Exception as e:
+                        print(f"Erro ao salvar o jogo: {e}")
+   
                     pygame.quit()
                     sys.exit()
+
+
                 # clique
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     # se clicar no botão de adicionar
