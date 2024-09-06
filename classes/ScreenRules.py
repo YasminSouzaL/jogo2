@@ -63,6 +63,13 @@ class ScreenRules:
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    try:
+                        self.load_instance.save_game(self)
+                        print("Jogo salvo com sucesso.")
+                    except Exception as e:
+                        print(f"Erro ao salvar o jogo: {e}")
+   
+                    pygame.quit()
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.update(event):

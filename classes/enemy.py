@@ -1,3 +1,4 @@
+
 import random
 from classes.Deck import Deck
 from classes.Hand import Hand
@@ -11,7 +12,6 @@ class Enemy:
         self.initialize_hand()
         print("Estou na classe Enemy")
         print("Dificuldade na classe Enemy:", self.difficulty)
-        print(f"Mão inicial do inimigo: {self.hand.cards}")
 
     def initialize_hand(self):
         deck = Deck()
@@ -25,13 +25,10 @@ class Enemy:
 
         # Seleciona a estratégia baseada na dificuldade
         if self.difficulty == 1:
-            # Dificuldade normal: joga a carta de maior valor na primeira rodada, depois aleatório
-            if current_round == 0:
-                card_to_play = self.play_smart()
-            else:
-                card_to_play = self.play_random()
+            # Modo Esperto: Joga de forma estratégica
+            card_to_play = self.play_smart(current_round)
         else:
-            # Outras dificuldades podem ser implementadas aqui
+            # Modo Aleatório
             card_to_play = self.play_random()
 
         print(f"O inimigo jogou: {card_to_play}")
@@ -39,15 +36,23 @@ class Enemy:
         return card_to_play
 
     def play_random(self):
+        # Modo aleatório: Escolhe qualquer carta
         card_to_play = random.choice(self.hand.cards)
         self.hand.remove_card(card_to_play)
         return card_to_play
 
-    def play_smart(self):
-        # Seleciona a carta de maior valor
-        card_to_play = max(self.hand.cards, key=lambda card: card.value)
-        self.hand.remove_card(card_to_play)
+    def play_smart(self, current_round):
+        # Ordena as cartas na mão
+        sorted_cards = sorted(self.hand.cards, key=lambda card: card.value)
+        
+        # Se o inimigo tiver 2 ou mais cartas, joga a segunda carta
+        if len(sorted_cards) > 1:
+            card_to_play = sorted_cards[1]
+        # Se o inimigo tiver apenas 1 carta, joga essa carta
+        elif len(sorted_cards) == 1:
+            card_to_play = sorted_cards[0]
+        # Caso não tenha mais cartas (o que não deveria ocorrer), retorna None
+        else:
+            card_to_play = None
+        
         return card_to_play
-
-    def get_hand(self):
-        return self.hand.cards

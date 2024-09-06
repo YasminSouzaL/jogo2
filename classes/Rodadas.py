@@ -9,6 +9,7 @@ from classes.Pontuacao import Pontuacao
 from classes.truco import Truco
 from stylos import stylo
 import pygame
+from classes.Load import Load
 pygame.mixer.init() 
 
 
@@ -38,6 +39,9 @@ class Rodadas:
         self.main_font = stylo.Fonts.get_main_font() 
         self.Title_fonte = stylo.Fonts.get_title_font()
         self.button = stylo.Fonts.get_button_font() 
+        self.load_instance = Load()
+        filename = "savefile.pkl"
+        self.filepath = os.path.join(r'data\save\savefile.pkl', filename)
         
         self.truco_sound = pygame.mixer.Sound("data/music/truco.mp3")
         self.aceitar_sound = pygame.mixer.Sound("data/music/aceita.mp3")
@@ -149,6 +153,10 @@ class Rodadas:
         self.draw_Card(current_player)
         self.button_logic()
         pygame.display.flip()
+       
+    def load_game(self):
+       self.load_instance.load_game(self)
+       print("Jogo carregado")
 
     def run(self):
         print("Running Rodadas")
@@ -207,9 +215,15 @@ class Rodadas:
                         self.handle_truco()
 
                 if event.type == pygame.QUIT:
+                    try:
+                        self.load_instance.save_game(self)
+                        print("Jogo salvo com sucesso.")
+                    except Exception as e:
+                        print(f"Erro ao salvar o jogo: {e}")
+   
                     pygame.quit()
                     sys.exit()
-
+                  
 
 
 
