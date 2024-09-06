@@ -65,7 +65,7 @@ class Rodadas:
         title.draw(self.screen)
 
     def draw_Text(self):
-        text = stylo.Text("Vez de: " + self.player_names[self.current_player_index], self.main_font, stylo.Colors.BLACK, self.width // 2, self.height // 3)
+        text = stylo.Text("Vez de: " + self.player_names[self.current_player_index], self.main_font, stylo.Colors.BLACK, self.width // 2, self.height // 4)
         text.draw(self.screen)
 
     def draw_background(self):
@@ -73,23 +73,37 @@ class Rodadas:
         background = pygame.transform.smoothscale(background, (self.width, self.height))
         self.screen.blit(background, (0, 0))
 
+    # def draw_Card(self, player):
+    #     x = 150
+    #     y = 350
+    #     for card in self.player_cards[player]:
+    #         card_image = self.card_images[f"{card.value}_{card.suit}"]
+    #         card_rect = card_image.get_rect()
+    #         card_rect.topleft = (x, y)
+    #         self.screen.blit(card_image, card_rect)
+    #         self.round_cards.append((card_rect, card))
+    #         x += 200
+
     def draw_Card(self, player):
         x = 150
         y = 350
         for card in self.player_cards[player]:
             card_image = self.card_images[f"{card.value}_{card.suit}"]
-            card_rect = card_image.get_rect()
-            card_rect.topleft = (x, y)
-            self.screen.blit(card_image, card_rect)
-            self.round_cards.append((card_rect, card))
-            x += 200
+            
+            # Criação de um objeto da classe Cards para desenhar a carta
+            card_obj = stylo.Cards(self.screen, x, y, card_image.get_width(), card_image.get_height(), card_image)
+            
+            # Atualiza a lista de cartas da rodada (round_cards)
+            self.round_cards.append((card_obj.card_rect, card))
+            
+            x += 220  # Incrementa a posição horizontal para a próxima cart
 
     def draw_scoreboard(self):
         player_points = {player: self.pontuacao.get_pontos(player) for player in self.player_names}
         text = "Placar: "
         for player, points in player_points.items():
             text += f"{player}: {points} "
-        scoreboard = stylo.Text(text, self.main_font, stylo.Colors.BLACK, self.width // 2, self.height // 2)
+        scoreboard = stylo.Text(text, self.main_font, stylo.Colors.BLACK, self.width // 2, self.height // 3)
         scoreboard.draw(self.screen)
 
     def check_game_winner(self):
